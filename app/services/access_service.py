@@ -1,10 +1,10 @@
-import os
 from datetime import timedelta
 
 import jwt
 from passlib.context import CryptContext
 from sqlmodel import Session
 
+from app.config.settings import settings
 from app.models.user_models import User
 from app.services.user_service import get_user_by_username
 from app.utils.date_utils import datetime_now_utc
@@ -17,7 +17,7 @@ def create_access_token(username: str, expiry_delta: timedelta) -> str:
     expiry = datetime_now_utc() + expiry_delta
     data.update({"exp": expiry})
 
-    return jwt.encode(data, os.environ.get("SECRET_KEY"))
+    return jwt.encode(data, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
 def authenticate_user(username: str, password: str, session: Session) -> User:

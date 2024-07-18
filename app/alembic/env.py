@@ -1,15 +1,10 @@
-import os
 from logging.config import fileConfig
 
 from alembic import context
-from dotenv import find_dotenv, load_dotenv
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import create_engine, engine_from_config, pool, text
 from sqlmodel import SQLModel
 
-from app.models.user_models import User
-
-load_dotenv(find_dotenv())
+from app.config.settings import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -30,7 +25,8 @@ target_metadata = SQLModel.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-config.set_main_option("sqlalchemy.url", os.environ.get("DB_URL"))
+db_url = settings.test_db_url if settings.env == "test" else settings.db_url
+config.set_main_option("sqlalchemy.url", db_url)
 
 
 def run_migrations_offline() -> None:
@@ -64,16 +60,24 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    if settings.env == "test":
+        connectable = create_engine(settings.db_url, isolation_level="AUTOCOMMIT")
+
+        with connectable.connect() as connection:
+            connection.execute(text(f"DROP DATABASE IF EXISTS {settings.test_db_name}"))
+            connection.execute(text(f"CREATE DATABASE {settings.test_db_name}"))
+
+    connectable = config.attributes.get("connection", None)
+
+    if connectable is None:
+        connectable = engine_from_config(
+            config.get_section(config.config_ini_section, {}),
+            prefix="sqlalchemy.",
+            poolclass=pool.NullPool,
+        )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

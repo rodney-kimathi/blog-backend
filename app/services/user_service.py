@@ -8,7 +8,7 @@ password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_user(user_request: UserRequest, session: Session) -> User:
     user = User(**user_request.model_dump())
-    user.password = create_password_hash(user.password)
+    user.password = create_password_hash(user_request.password)
 
     session.add(user)
     session.commit()

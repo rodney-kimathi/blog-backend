@@ -1,13 +1,11 @@
-import os
-
 from sqlalchemy import Engine
 from sqlmodel import create_engine, Session
 
+from app.config.settings import settings
+
 
 def create_database_engine() -> Engine:
-    connection_url = os.environ.get("DB_URL")
-
-    return create_engine(connection_url)
+    return create_engine(settings.db_url)
 
 
 def get_database_session() -> Session:

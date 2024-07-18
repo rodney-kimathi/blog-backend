@@ -1,4 +1,3 @@
-import os
 from typing import Annotated
 
 import jwt
@@ -8,10 +7,10 @@ from jwt import InvalidTokenError
 from sqlmodel import Session
 
 from app.config.database import get_database_session
+from app.config.settings import settings
 from app.models.user_models import User
 from app.services.user_service import get_user_by_username
 
-ALGORITHM = "HS256"
 oauth2_scheme = OAuth2PasswordBearer("login")
 
 
@@ -26,7 +25,7 @@ async def get_current_user(
     )
 
     try:
-        payload = jwt.decode(token, os.environ.get("SECRET_KEY"), [ALGORITHM])
+        payload = jwt.decode(token, settings.jwt_secret, [settings.jwt_algorithm])
         username = payload.get("sub")
         user = get_user_by_username(username, session)
     except (InvalidTokenError, ValueError):
