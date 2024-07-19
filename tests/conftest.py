@@ -10,6 +10,11 @@ from app.config.settings import settings
 from app.main import app
 from app.models.user_models import User
 
+pytest_plugins = [
+    "tests.fixtures.access_fixtures",
+    "tests.fixtures.user_fixtures",
+]
+
 
 @pytest.fixture(scope="session")
 def test_engine() -> Engine:
