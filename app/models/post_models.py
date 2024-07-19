@@ -8,20 +8,11 @@ from app.models.base_models import Base, BaseResponse
 class PostBase(SQLModel):
     title: str = Field(min_length=4, max_length=64, unique=True, nullable=False)
     content: str | None = Field(default=None, nullable=True)
-    user_id: int = Field(foreign_key="user.id", nullable=False)
-
-
-class PostDetailBase(SQLModel):
-    post_id: int = Field(foreign_key="post.id", nullable=False)
-    content: str | None = Field(default=None, nullable=True)
 
 
 class Post(Base, PostBase, table=True):
+    user_id: int = Field(foreign_key="user.id", nullable=False)
     archived_at: datetime | None = Field(default=None, nullable=True)
-
-
-class PostDetail(Base, PostDetailBase, table=True):
-    pass
 
 
 class PostRequest(PostBase):
@@ -29,4 +20,5 @@ class PostRequest(PostBase):
 
 
 class PostResponse(BaseResponse, PostBase):
+    user_id: int
     archived_at: datetime | None

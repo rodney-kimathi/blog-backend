@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
 from app.config.settings import settings
-from app.models.post_models import Post, PostDetail
+from app.models.post_models import Post
 from app.models.user_models import User
 
 # this is the Alembic Config object, which provides

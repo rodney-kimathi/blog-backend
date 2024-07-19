@@ -9,8 +9,6 @@ from app.models.user_models import User
 from app.services.user_service import get_user_by_username
 from app.utils.date_utils import datetime_now_utc
 
-password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
 def create_access_token(username: str, expiry_delta: timedelta) -> str:
     data = {"sub": username}
@@ -33,4 +31,6 @@ def authenticate_user(username: str, password: str, session: Session) -> User:
 
 
 def is_password_valid(plain_password: str, hashed_password: str) -> bool:
+    password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
     return password_context.verify(plain_password, hashed_password)
