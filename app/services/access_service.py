@@ -6,7 +6,7 @@ from sqlmodel import Session
 
 from app.config.settings import settings
 from app.models.user_models import User
-from app.services.user_service import get_user_by_username
+from app.services.user_service import read_user_by_username
 from app.utils.date_utils import datetime_now_utc
 
 
@@ -20,7 +20,7 @@ def create_access_token(username: str, expiry_delta: timedelta) -> str:
 
 def authenticate_user(username: str, password: str, session: Session) -> User:
     try:
-        user = get_user_by_username(username, session)
+        user = read_user_by_username(username, session)
     except ValueError as error:
         raise ValueError(str(error))
 

@@ -15,16 +15,7 @@ def create_user(user_request: UserRequest, session: Session) -> User:
     return user
 
 
-def get_user_by_id(user_id: int, session: Session) -> User:
-    user = session.get(User, user_id)
-
-    if not user:
-        raise ValueError("User not found")
-
-    return user
-
-
-def get_user_by_username(username: str, session: Session) -> User:
+def read_user_by_username(username: str, session: Session) -> User:
     query = select(User).where(User.username == username)
     user = session.exec(query).first()
 
