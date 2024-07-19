@@ -2,26 +2,44 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlmodel import create_engine, Session
+from sqlalchemy import Engine, text
+from sqlmodel import create_engine, delete, Session
 
 from app.config.database import get_database_session
 from app.config.settings import settings
 from app.main import app
+from app.models.user_models import User
 
 
 @pytest.fixture(scope="session")
-def test_session() -> Session:
+def test_engine() -> Engine:
+    engine = create_engine(settings.db_url, isolation_level="AUTOCOMMIT")
+
+    with Session(engine) as session:
+        statement = text(f"DROP DATABASE IF EXISTS {settings.test_db_name}")
+        session.exec(statement)
+
+        statement = text(f"CREATE DATABASE {settings.test_db_name}")
+        session.exec(statement)
+
     test_engine = create_engine(settings.test_db_url)
+
+    yield test_engine
+
+
+@pytest.fixture
+def test_session(test_engine: Engine) -> Session:
     alembic_config = Config("alembic.ini")
-    alembic_config.attributes["connection"] = test_engine
 
     with Session(test_engine) as test_session:
         settings.env = "test"
+        alembic_config.attributes["connection"] = test_session.connection()
         command.upgrade(alembic_config, "head")
 
         yield test_session
 
-        command.downgrade(alembic_config, "base")
+        test_session.exec(delete(User))
+        test_session.commit()
         settings.env = "dev"
 
 

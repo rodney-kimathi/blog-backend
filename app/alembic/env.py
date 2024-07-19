@@ -60,13 +60,6 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    if settings.env == "test":
-        connectable = create_engine(settings.db_url, isolation_level="AUTOCOMMIT")
-
-        with connectable.connect() as connection:
-            connection.execute(text(f"DROP DATABASE IF EXISTS {settings.test_db_name}"))
-            connection.execute(text(f"CREATE DATABASE {settings.test_db_name}"))
-
     connectable = config.attributes.get("connection", None)
 
     if connectable is None:
@@ -76,8 +69,13 @@ def run_migrations_online() -> None:
             poolclass=pool.NullPool,
         )
 
-    with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        with connectable.connect() as connection:
+            context.configure(connection=connection, target_metadata=target_metadata)
+
+            with context.begin_transaction():
+                context.run_migrations()
+    else:
+        context.configure(connection=connectable, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()
