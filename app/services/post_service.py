@@ -44,3 +44,13 @@ def update_post(user_id: int, post_id: int, post_request: PostRequest, session: 
     session.refresh(post)
 
     return post
+
+
+def delete_post(user_id: int, post_id: int, session: Session) -> None:
+    try:
+        post = read_post(user_id, post_id, session)
+    except ValueError as error:
+        raise ValueError(str(error))
+
+    session.delete(post)
+    session.commit()

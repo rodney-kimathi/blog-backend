@@ -7,7 +7,7 @@ from app.config.database import get_database_session
 from app.config.security import get_current_active_user
 from app.models.post_models import Post, PostRequest, PostResponse
 from app.models.user_models import User
-from app.services.post_service import create_post, read_post, read_posts, update_post
+from app.services.post_service import create_post, delete_post, read_post, read_posts, update_post
 
 UserDependency = Annotated[User, Depends(get_current_active_user)]
 SessionDependency = Annotated[Session, Depends(get_database_session)]
@@ -41,5 +41,13 @@ async def update(
 ) -> Post:
     try:
         return update_post(current_user.id, post_id, post_request, session)
+    except ValueError as error:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
+
+
+@router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete(post_id: int, current_user: UserDependency, session: SessionDependency) -> None:
+    try:
+        delete_post(current_user.id, post_id, session)
     except ValueError as error:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
