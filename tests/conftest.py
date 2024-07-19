@@ -8,10 +8,12 @@ from sqlmodel import create_engine, delete, Session
 from app.config.database import get_database_session
 from app.config.settings import settings
 from app.main import app
+from app.models.post_models import Post
 from app.models.user_models import User
 
 pytest_plugins = [
     "tests.fixtures.access_fixtures",
+    "tests.fixtures.post_fixtures",
     "tests.fixtures.user_fixtures",
 ]
 
@@ -43,6 +45,7 @@ def test_session(test_engine: Engine) -> Session:
 
         yield test_session
 
+        test_session.exec(delete(Post))
         test_session.exec(delete(User))
         test_session.commit()
         settings.env = "dev"
