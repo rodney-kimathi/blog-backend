@@ -14,7 +14,7 @@ class TestLogin:
             token_request: TokenRequest,
             test_client: TestClient
     ) -> None:
-        response = test_client.post("/login", json=token_request.model_dump())
+        response = test_client.post("/login", data=token_request.model_dump())
         response_data = response.json()
 
         assert response.status_code == status.HTTP_200_OK
@@ -27,7 +27,7 @@ class TestLogin:
             test_client: TestClient
     ) -> None:
         token_request.username = "incorrect_username"
-        response = test_client.post("/login", json=token_request.model_dump())
+        response = test_client.post("/login", data=token_request.model_dump())
         response_data = response.json()
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -40,7 +40,7 @@ class TestLogin:
             test_client: TestClient
     ) -> None:
         token_request.password = "incorrect_password"
-        response = test_client.post("/login", json=token_request.model_dump())
+        response = test_client.post("/login", data=token_request.model_dump())
         response_data = response.json()
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
