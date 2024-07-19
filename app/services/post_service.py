@@ -1,6 +1,7 @@
 from sqlmodel import select, Session
 
 from app.models.post_models import Post, PostRequest
+from app.utils.date_utils import datetime_now_utc
 
 
 def create_post(user_id: int, post_request: PostRequest, session: Session) -> Post:
@@ -24,5 +25,22 @@ def read_post(user_id: int, post_id: int, session: Session) -> Post:
 
     if not post or post.user_id != user_id:
         raise ValueError("Post not found")
+
+    return post
+
+
+def update_post(user_id: int, post_id: int, post_request: PostRequest, session: Session) -> Post:
+    try:
+        post = read_post(user_id, post_id, session)
+    except ValueError as error:
+        raise ValueError(str(error))
+
+    post.title = post_request.title
+    post.content = post_request.content
+    post.updated_at = datetime_now_utc()
+
+    session.add(post)
+    session.commit()
+    session.refresh(post)
 
     return post
