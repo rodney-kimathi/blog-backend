@@ -48,7 +48,7 @@ def test_session(test_engine: Engine) -> Session:
         test_session.exec(delete(Post))
         test_session.exec(delete(User))
         test_session.commit()
-        settings.env = "dev"
+        settings.env = "default"
 
 
 @pytest.fixture
