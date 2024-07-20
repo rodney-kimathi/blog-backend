@@ -1,7 +1,7 @@
 from datetime import timedelta
 
+import bcrypt
 import jwt
-from passlib.context import CryptContext
 from sqlmodel import Session
 
 from app.config.settings import settings
@@ -31,6 +31,4 @@ def authenticate_user(username: str, password: str, session: Session) -> User:
 
 
 def is_password_valid(plain_password: str, hashed_password: str) -> bool:
-    password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-    return password_context.verify(plain_password, hashed_password)
+    return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())

@@ -1,4 +1,4 @@
-from passlib.context import CryptContext
+import bcrypt
 from sqlmodel import select, Session
 
 from app.models.user_models import User, UserRequest
@@ -26,6 +26,4 @@ def read_user_by_username(username: str, session: Session) -> User:
 
 
 def create_password_hash(password: str) -> str:
-    password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-    return password_context.hash(password)
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
