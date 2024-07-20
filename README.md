@@ -1,17 +1,17 @@
 # Blog REST API
 
-This is a RESTful API for a simple blogging platform
+This is a RESTful API for a simple blogging platform.
 
 ## Features
 
-- [FastAPI](https://fastapi.tiangolo.com) - A modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints
-- [SQLModel](https://sqlmodel.tiangolo.com) - A library for interacting with SQL databases from Python code with Python objects based on Python type annotations, and powered by Pydantic and SQLAlchemy
-- [Alembic](https://alembic.sqlalchemy.org) - A lightweight database migration tool for usage with the SQLAlchemy Database Toolkit for Python
-- [PyJWT](https://pyjwt.readthedocs.io) - A Python library which allows you to encode and decode JSON Web Tokens (JWT)
-- [Swagger UI](https://swagger.io) - A collection of HTML, JavaScript, and CSS assets that dynamically generate interactive documentation from an OpenAPI-compliant API
-- [Pytest](https://docs.pytest.org) - A framework that makes it easy to write small, readable tests, and can scale to support complex functional testing for applications and libraries
-- [PostgreSQL](https://www.postgresql.org) - A powerful, open source object-relational database system
-- [Docker](https://www.docker.com) - A set of platform as a service (PaaS) products that use OS-level virtualization to deliver software in packages called containers
+- [**FastAPI**](https://fastapi.tiangolo.com) - A modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints
+- [**SQLModel**](https://sqlmodel.tiangolo.com) - A library for interacting with SQL databases from Python code with Python objects based on Python type annotations, and powered by Pydantic and SQLAlchemy
+- [**Alembic**](https://alembic.sqlalchemy.org) - A lightweight database migration tool for usage with the SQLAlchemy Database Toolkit for Python
+- [**PyJWT**](https://pyjwt.readthedocs.io) - A Python library which allows you to encode and decode JSON Web Tokens (JWT)
+- [**Swagger UI**](https://swagger.io) - A collection of HTML, JavaScript, and CSS assets that dynamically generate interactive documentation from an OpenAPI-compliant API
+- [**Pytest**](https://docs.pytest.org) - A framework that makes it easy to write small, readable tests, and can scale to support complex functional testing for applications and libraries
+- [**PostgreSQL**](https://www.postgresql.org) - A powerful, open source object-relational database system
+- [**Docker**](https://www.docker.com) - A set of platform as a service (PaaS) products that use OS-level virtualization to deliver software in packages called containers
 
 ## Requirements
 
@@ -23,31 +23,31 @@ This is a RESTful API for a simple blogging platform
 
 To run the application locally:
 
-- Clone the project
+- **Clone the project**
 
   `git clone https://github.com/rodney-kimathi/blog-backend.git`
 
-- Switch to the project directory
+- **Switch to the project directory**
 
   `cd blog-backend`
 
-- Copy application secrets
+- **Copy application secrets**
 
   `cp .env.template .env`
 
-- Start the application
+- **Start the application**
 
   `docker-compose up -d`
 
-- Run database migrations
+- **Run database migrations**
 
   `docker-compose exec app alembic upgrade head`
 
-- Run the tests
+- **Run the tests**
 
   `docker-compose exec app pytest`
 
-- Shut down the application
+- **Shut down the application**
 
   `docker-compose down -v`
 
@@ -59,18 +59,50 @@ Detailed documentation of the endpoints, including request and response formats,
 
 For access, visit the [documentation](http://localhost:8080/docs) once the application is running.
 
+## Considerations
+
+- **Framework: FastAPI**
+
+  - **Decision**: FastAPI was chosen for its speed, modern features, and ease of use.
+  - **Trade-off**: While Django or Flask could offer more features out of the box, FastAPI provides better performance and scalability for an API-centric application.
+
+- **Database: PostgreSQL with SQLModel**
+
+  - **Decision**: PostgreSQL was selected for its reliability and advanced features. SQLModel, built on SQLAlchemy and Pydantic, provides an easy way to work with SQL databases using Python type annotations.
+  - **Trade-off**: While NoSQL databases like MongoDB offer flexibility, PostgreSQL's relational nature is more suitable for structured data and complex queries needed in a blogging platform.
+
+- **Containerization: Docker**
+
+  - **Decision**: Docker was used to containerize the application for consistency across development, testing, and production environments.
+  - **Trade-off**: This adds a layer of complexity in terms of setup and configuration, but ensures a reproducible and isolated environment.
+
+- **Authentication: PyJWT**
+
+  - **Decision**: PyJWT was used to handle JSON Web Tokens for secure authentication.
+  - **Trade-off**: While JWTs are stateless and scalable, they can lead to security issues if not implemented correctly, such as token expiration and revocation.
+
+- **Documentation: Swagger UI**
+
+  - **Decision**: Swagger UI was chosen to provide interactive API documentation.
+  - **Trade-off**: While it offers excellent developer experience, it requires careful maintenance to ensure the documentation stays up to date with the API changes.
+
+- **Testing: Pytest**
+
+  - **Decision**: Pytest was selected for its simplicity and powerful features for writing and running tests.
+  - **Trade-off**: Comprehensive testing can be time-consuming but ensures the reliability and stability of the application.
+
 ## Improvements
 
-- Introduce comment and tag features
-- Add support for multimedia content
-- Save content in object storage
-- Secure communication (HTTPS)
-- Fully asynchronous
-- Data caching
-- Data pagination
-- Role-based access control
-- Custom error handling and logging
-- Cross-origin resource sharing (CORS) configuration
-- Code inspection
-- Load balancing
-- Continuous integration and deployment
+- **Comment and Tag Features**: Adding these features would enhance user interaction and content categorization.
+- **Multimedia Support**: Enabling support for images, videos, and other media would make the platform more versatile.
+- **Object Storage**: Storing content in object storage (e.g., AWS S3) would improve scalability and management of large files.
+- **Secure Communication (HTTPS)**: Implementing HTTPS would ensure secure data transmission.
+- **Fully Asynchronous**: Making the entire application asynchronous would improve performance and responsiveness.
+- **Data Caching**: Implementing caching mechanisms would enhance performance by reducing database load.
+- **Data Pagination**: Adding pagination to API responses would improve performance and usability.
+- **Role-based Access Control (RBAC)**: Implementing RBAC would enhance security by controlling access based on user roles.
+- **Custom Error Handling and Logging**: Better error handling and logging mechanisms would improve debugging and monitoring.
+- **Cross-Origin Resource Sharing (CORS)**: Proper CORS configuration would enable secure cross-origin requests.
+- **Code Inspection**: Use of code inspection tools (e.g., linters) would ensure code quality and maintainability.
+- **Load Balancing**: Implementing load balancing would improve scalability and availability.
+- **Continuous Integration and Deployment (CI/CD)**: Setting up CI/CD pipelines would streamline development, testing, and deployment processes.
